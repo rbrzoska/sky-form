@@ -1,0 +1,5 @@
+<div class="form-group" [formGroup]="form">
+  <label>{{controlTitle}}</label>
+  <input type="number" class="form-control" [formControlName]="controlName" placeholder="">
+  {{form.getRawValue() | json}}
+</div>

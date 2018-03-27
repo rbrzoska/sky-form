@@ -1,0 +1,5 @@
+<div class="form-group" [formGroup]="form"
+     [hidden]="parentControlName && !form.controls[parentControlName].value">
+  <label>{{controlTitle}}</label>
+  <input type="text" class="form-control" formControlName="{{controlName}}">
+</div>
