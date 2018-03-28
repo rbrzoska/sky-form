@@ -1,0 +1,4 @@
+<form [formGroup]="creatorForm">
+  <app-form-creator-input [formGroup]="input" *ngFor="let input of creatorForm.controls"></app-form-creator-input>
+  <button type="button" class="btn btn-danger" (click)="addInput()">Add Input</button>
+</form>

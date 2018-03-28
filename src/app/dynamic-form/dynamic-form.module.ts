@@ -6,6 +6,8 @@ import { NumberControlComponent } from './controls/number-control/number-control
 import { YesNoControlComponent } from './controls/yes-no-control/yes-no-control.component';
 import { FormContainerComponent } from './form-container/form-container.component';
 import { ReactiveFormsModule } from '@angular/forms';
+import { FormCreatorComponent } from './creator/form-creator.component';
+import { FormCreatorInputComponent } from './creator/form-creator-input.component';
 
 @NgModule({
   imports: [
@@ -13,9 +15,9 @@ import { ReactiveFormsModule } from '@angular/forms';
     ReactiveFormsModule
 
   ],
-  declarations: [TextControlComponent, NumberControlComponent, YesNoControlComponent, FormContainerComponent],
+  declarations: [TextControlComponent, NumberControlComponent, YesNoControlComponent, FormContainerComponent, FormCreatorComponent, FormCreatorInputComponent],
   entryComponents: [TextControlComponent, NumberControlComponent, YesNoControlComponent],
-  exports: [FormContainerComponent],
+  exports: [FormContainerComponent, FormCreatorComponent],
   providers: [FormGeneratorService]
 })
 export class DynamicFormModule { }
