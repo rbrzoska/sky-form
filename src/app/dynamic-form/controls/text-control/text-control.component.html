@@ -1,5 +1,5 @@
-<div class="form-group" [formGroup]="form"
-     [hidden]="parentControlName && !form.controls[parentControlName].value">
+<div *ngIf="enableControl()" class="form-group"
+     [formGroup]="form">
   <label>{{controlTitle}}</label>
-  <input type="text" class="form-control" formControlName="{{controlName}}">
+  <input type="text" class="form-control" [formControlName]="controlName">
 </div>

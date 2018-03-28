@@ -1,8 +1,11 @@
-<div class="form-check form-check-inline">
-  <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1" value="option1">
-  <label class="form-check-label" for="inlineRadio1">Yes</label>
-</div>
-<div class="form-check form-check-inline">
-  <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2" value="option2">
-  <label class="form-check-label" for="inlineRadio2">No</label>
+<div *ngIf="enableControl()" class="form-group" [formGroup]="form">
+  <div><label class="form-check-label">{{controlTitle}}</label></div>
+  <div class="form-check form-check-inline">
+    <input class="form-check-input" type="radio" [formControlName]="controlName" value="yes">
+    <label class="form-check-label">Yes</label>
+  </div>
+  <div class="form-check form-check-inline">
+    <input class="form-check-input" type="radio"  [formControlName]="controlName" value="no">
+    <label class="form-check-label">No</label>
+  </div>
 </div>

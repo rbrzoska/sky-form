@@ -3,7 +3,6 @@ import {
   ComponentFactoryResolver,
   Input,
   OnInit,
-  TemplateRef,
   ViewChild,
   ViewContainerRef
 } from '@angular/core';
@@ -15,14 +14,19 @@ import { FormControl, FormGroup } from '@angular/forms';
 @Component({
   selector: 'app-form-container',
   template: `
-  <form [formGroup]="myForm" #formContainer></form>
+  <form [formGroup]="myForm"  (submit)="submitForm()">
+    <ng-container #formContainer></ng-container>
+    <button class="btn btn-success">Submit</button>
+    <button type="button" (click)="resetForm()" class="btn btn-danger">Reset</button>
+  </form>
+    <pre *ngIf="submittedValue">{{submittedValue | json}}</pre>
   `,
   styleUrls: ['./form-container.component.scss']
 })
 export class FormContainerComponent implements OnInit {
 
   myForm: FormGroup;
-
+  submittedValue: any;
   @Input() config: any[] = [
     {
       type: 'text',
@@ -30,16 +34,19 @@ export class FormContainerComponent implements OnInit {
       controls: [{
         type: 'yesNo',
         question: 'Do you like them?',
-        equals: 'Bayern',
+        conditionType: 'equals',
+        conditionValue: 'Bayern',
         controls: [{
           type: 'yesNo',
           question: 'Really?',
-          equals: 'yes'
+          conditionType: 'equals',
+          conditionValue: 'yes',
         }]
       }, {
         type: 'text',
         question: 'Why not Bayern?',
-        equals: 'Barcelona',
+        conditionType: 'equals',
+        conditionValue: 'Barcelona',
       }]
     }, {
       type: 'text',
@@ -47,10 +54,11 @@ export class FormContainerComponent implements OnInit {
     }, {
       type: 'number',
       question: 'How old are you',
-      greaterThan: 18,
       controls: [{
         type: 'text',
-        question: 'Do you like alcohol?'
+        question: 'Do you like alcohol?',
+        conditionType: 'greater',
+        conditionValue: 18,
       }
       ]
     }];
@@ -68,7 +76,6 @@ export class FormContainerComponent implements OnInit {
     this.textComponentFactory = this.cdr.resolveComponentFactory(TextControlComponent);
     this.numberComponentFactory = this.cdr.resolveComponentFactory(NumberControlComponent);
     this.yesnoComponentFactory = this.cdr.resolveComponentFactory(YesNoControlComponent);
-    this.myForm.valueChanges.subscribe(x => console.log(x))
     this.loadFormConfig(this.config);
   }
 
@@ -95,10 +102,20 @@ export class FormContainerComponent implements OnInit {
     ctrl.instance.controlTitle = control.question;
     ctrl.instance.form = this.myForm;
     ctrl.instance.parentControlName = parentControlName;
+    ctrl.instance.controlConditionType = control.conditionType;
+    ctrl.instance.controlConditionValue = control.conditionValue;
     this.myForm.addControl('control' + this.controlsIndex, new FormControl());
     if (control.controls && control.controls.length) {
-      control.controls.forEach(innerControl => this.generateControl(innerControl, 'control' + this.controlsIndex ))
+      control.controls.forEach(innerControl => this.generateControl(innerControl, ctrl.instance.controlName ));
     }
+  }
+
+  submitForm() {
+    this.submittedValue = this.myForm.value;
+  }
+  resetForm() {
+    this.submittedValue = null;
+    this.myForm.reset();
   }
 
 }
