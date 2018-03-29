@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import {FormGeneratorService} from '../form-generator.service';
 
 @Component({
   selector: 'app-form-creator',
@@ -10,8 +11,8 @@ export class FormCreatorComponent implements OnInit {
 
   creatorForm: FormArray;
 
-  constructor(private fb: FormBuilder) {
-    this.creatorForm = this.fb.array([]);
+  constructor(private fb: FormBuilder, private formGenerator: FormGeneratorService) {
+    this.creatorForm = formGenerator.loadFormObject();
   }
 
   ngOnInit() {
@@ -30,6 +31,10 @@ export class FormCreatorComponent implements OnInit {
       question: '',
       type: ''
     });
+  }
+
+  save() {
+    this.formGenerator.saveForm(this.creatorForm);
   }
 
 }
