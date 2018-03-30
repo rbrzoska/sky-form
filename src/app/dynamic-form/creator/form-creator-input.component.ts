@@ -13,16 +13,14 @@ export class FormCreatorInputComponent{
   @Input() isRootControl = false;
   @Output() remove = new EventEmitter<number>();
   @Output() add = new EventEmitter<any>();
+  @Input() parentType: string;
 
   get dynamicControls(): FormArray { return this.formGroup.get('dynamicControls') as FormArray; }
 
-  constructor(private fb: FormBuilder, private cdr: ChangeDetectorRef) {}
+  constructor(private fb: FormBuilder) {}
 
   addSubInput() {
     this.add.emit(this.createInput());
-  }
-  ngOnInit() {
-    this.formGroup.statusChanges.subscribe(() => this.cdr.detectChanges());
   }
 
   private createInput(): FormGroup {
@@ -38,12 +36,13 @@ export class FormCreatorInputComponent{
   removeInput() {
     this.remove.emit(this.index);
   }
+
   handleRemoveSubInput(index: number) {
     this.dynamicControls.removeAt(index);
   }
+
   handleAddSubInput(control: FormGroup) {
     (<FormArray>this.dynamicControls.at(this.index).get('dynamicControls')).push(control);
-    console.log(this.dynamicControls)
   }
 
 }

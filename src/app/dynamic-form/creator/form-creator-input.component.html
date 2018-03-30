@@ -23,22 +23,22 @@
           <label class="mr-1">Condition</label>
           <select class="form-control" formControlName="conditionType">
             <option value="equals">Equals</option>
-            <option value="greater" *ngIf="formGroup.controls['type'].value === 'number'">Greater than</option>
-            <option value="less" *ngIf="formGroup.controls['type'].value === 'number'">Less than</option>
+            <option value="greater" *ngIf="parentType === 'number'">Greater than</option>
+            <option value="less" *ngIf="parentType === 'number'">Less than</option>
           </select>
         </div>
         <div class="form-group">
-          <select *ngIf="formGroup.controls['type'].value === 'yesNo'"
+          <select *ngIf="parentType === 'yesNo'"
                   class="form-control"
                   formControlName="conditionValue">
           <option value="yes">Yes</option>
           <option value="no">No</option>
         </select>
-          <input *ngIf="formGroup.controls['type'].value === 'text'"
+          <input *ngIf="parentType === 'text'"
                  type="text"
                  class="form-control form-inline"
                  formControlName="conditionValue">
-          <input *ngIf="formGroup.controls['type'].value === 'number'"
+          <input *ngIf="parentType === 'number'"
                  type="number"
                  class="form-control form-inline"
                  formControlName="conditionValue">
@@ -55,6 +55,7 @@
       <app-form-creator-input
         [formGroup]="dynamicControls.at(i)"
         [index]="i"
+        [parentType]="formGroup.get('type').value"
         (add)="handleAddSubInput($event)"
         (remove)="handleRemoveSubInput($event)">
       </app-form-creator-input>
