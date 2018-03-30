@@ -1,40 +1,48 @@
-import { Component, OnInit } from '@angular/core';
-import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
-import {FormGeneratorService} from '../form-generator.service';
+import { Component } from '@angular/core';
+import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormDataStorageService } from '../form-data-storage.service';
 
 @Component({
   selector: 'app-form-creator',
   templateUrl: './form-creator.component.html',
   styles: []
 })
-export class FormCreatorComponent implements OnInit {
+export class FormCreatorComponent {
 
   creatorForm: FormArray;
 
-  constructor(private fb: FormBuilder, private formGenerator: FormGeneratorService) {
-    this.creatorForm = formGenerator.loadFormObject();
-  }
-
-  ngOnInit() {
+  constructor(private fb: FormBuilder, private formGenerator: FormDataStorageService) {
+    this.creatorForm = formGenerator.loadReactiveFormObject();
   }
 
   addInput() {
-    this.creatorForm.push(this.createInput());
+    this.creatorForm.push(this.createInputGroup());
   }
 
   handleRemove(index: number) {
     this.creatorForm.removeAt(index);
   }
-
-  private createInput(): FormGroup {
-    return this.fb.group({
-      question: '',
-      type: ''
-    });
+  handleAdd(control: FormGroup, index: number) {
+    let dynamicForms = this.creatorForm.at(index).get('dynamicControls') as FormArray;
+    dynamicForms.push(control);
   }
 
-  save() {
-    this.formGenerator.saveForm(this.creatorForm);
+  private createInputGroup(): FormGroup {
+    return this.fb.group({
+      question: ['', Validators.required],
+      type: ['', Validators.required],
+      conditionType: '',
+      conditionValue: '',
+      dynamicControls: this.fb.array([])
+    });
+  }
+  save(silentSave: boolean = false): boolean {
+    if(this.creatorForm.valid) {
+      this.formGenerator.saveForm(this.creatorForm, silentSave);
+      return true
+    } else {
+      return false;
+    }
   }
 
 }

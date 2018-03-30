@@ -8,12 +8,15 @@ import { DynamicFormModule } from './dynamic-form/dynamic-form.module';
 import { ReactiveFormsModule } from '@angular/forms';
 import {RouterModule, Routes} from '@angular/router';
 import {FormCreatorComponent} from './dynamic-form/creator/form-creator.component';
-import {FormContainerComponent} from './dynamic-form/form-container/form-container.component';
+import { ExportComponent } from './dynamic-form/export/export.component';
+import { PreviewComponent } from './dynamic-form/preview/preview.component';
+import { SaveOnDeactvationGuard } from './save-on-deactvation.guard';
 
 const routes: Routes = [
   {path: '', redirectTo: 'create', pathMatch: 'full'},
-  {path: 'create', component: FormCreatorComponent},
-  {path: 'preview', component: FormContainerComponent}
+  {path: 'create', component: FormCreatorComponent, canDeactivate: [SaveOnDeactvationGuard]},
+  {path: 'preview', component: PreviewComponent},
+  {path: 'export', component: ExportComponent}
 ];
 
 @NgModule({
@@ -27,7 +30,7 @@ const routes: Routes = [
     ReactiveFormsModule,
     RouterModule.forRoot(routes)
   ],
-  providers: [],
+  providers: [SaveOnDeactvationGuard],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

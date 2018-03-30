@@ -1,8 +1,20 @@
 <form [formGroup]="creatorForm">
-  <app-form-creator-input [formGroup]="input"
-                          [index]="i"
-                          (remove)="handleRemove($event)"
-                          *ngFor="let input of creatorForm.controls; let i = index"></app-form-creator-input>
-  <button type="button" class="btn btn-primary" (click)="addInput()">Add Input</button>
+  <div>
+    <app-form-creator-input [formGroup]="creatorForm.at(i)"
+                            [formGroupName]="i"
+                            [index]="i"
+                            [isRootControl]="true"
+                            (remove)="handleRemove($event)"
+                            (add)="handleAdd($event, i)"
+                            *ngFor="let input of creatorForm.controls; let i = index">
+    </app-form-creator-input>
+  </div>
+
+  <button type="button"
+          class="btn btn-primary mr-2"
+          (click)="addInput()">Add Input</button>
+  <button type="button"
+          [disabled]="creatorForm.invalid"
+          class="btn btn-success"
+          (click)="save()">Save</button>
 </form>
-<button (click)="save()">Save</button>

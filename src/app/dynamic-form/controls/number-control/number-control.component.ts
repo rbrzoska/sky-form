@@ -3,8 +3,7 @@ import {AbstractDynamicControl} from '../abstract-dynamic-control';
 
 @Component({
   selector: 'app-number-control',
-  templateUrl: './number-control.component.html',
-  styleUrls: ['./number-control.component.scss']
+  templateUrl: './number-control.component.html'
 })
 export class NumberControlComponent extends AbstractDynamicControl {
   constructor() {

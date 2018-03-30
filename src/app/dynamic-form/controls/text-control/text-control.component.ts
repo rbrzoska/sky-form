@@ -3,8 +3,7 @@ import {AbstractDynamicControl} from '../abstract-dynamic-control';
 
 @Component({
   selector: 'app-text-control',
-  templateUrl: './text-control.component.html',
-  styleUrls: ['./text-control.component.scss']
+  templateUrl: './text-control.component.html'
 })
 export class TextControlComponent extends AbstractDynamicControl {
   constructor() {

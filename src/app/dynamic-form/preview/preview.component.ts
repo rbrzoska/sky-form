@@ -10,58 +10,28 @@ import { TextControlComponent } from '../controls/text-control/text-control.comp
 import { NumberControlComponent } from '../controls/number-control/number-control.component';
 import { YesNoControlComponent } from '../controls/yes-no-control/yes-no-control.component';
 import { FormControl, FormGroup } from '@angular/forms';
+import { FormDataStorageService } from '../form-data-storage.service';
 
 @Component({
-  selector: 'app-form-container',
+  selector: 'app-form-preview',
   template: `
-  <form [formGroup]="myForm"  (submit)="submitForm()">
-    <ng-container #formContainer></ng-container>
-    <button class="btn btn-success">Submit</button>
-    <button type="button" (click)="resetForm()" class="btn btn-danger">Reset</button>
-  </form>
+    <div class="card">
+      <div class="card-body">
+        <form [formGroup]="myForm"  (submit)="submitForm()">
+          <ng-container #formContainer></ng-container>
+          <button class="btn btn-success">Submit</button>
+          <button type="button" (click)="resetForm()" class="btn btn-danger">Reset</button>
+        </form>
+      </div>
+    </div>
     <pre *ngIf="submittedValue">{{submittedValue | json}}</pre>
-  `,
-  styleUrls: ['./form-container.component.scss']
+  `
 })
-export class FormContainerComponent implements OnInit {
+export class PreviewComponent implements OnInit {
 
   myForm: FormGroup;
-  submittedValue: any;
-  @Input() config: any[] = [
-    {
-      type: 'text',
-      question: 'What is favourite team',
-      controls: [{
-        type: 'yesNo',
-        question: 'Do you like them?',
-        conditionType: 'equals',
-        conditionValue: 'Bayern',
-        controls: [{
-          type: 'yesNo',
-          question: 'Really?',
-          conditionType: 'equals',
-          conditionValue: 'yes',
-        }]
-      }, {
-        type: 'text',
-        question: 'Why not Bayern?',
-        conditionType: 'equals',
-        conditionValue: 'Barcelona',
-      }]
-    }, {
-      type: 'text',
-      question: 'What is your name',
-    }, {
-      type: 'number',
-      question: 'How old are you',
-      controls: [{
-        type: 'text',
-        question: 'Do you like alcohol?',
-        conditionType: 'greater',
-        conditionValue: 18,
-      }
-      ]
-    }];
+  submittedValue: FormConfig | null;
+  @Input() config: FormConfig;
 
   @ViewChild('formContainer', {read: ViewContainerRef}) viewContainer: ViewContainerRef;
 
@@ -69,7 +39,9 @@ export class FormContainerComponent implements OnInit {
   textComponentFactory: ComponentFactory<TextControlComponent>;
   numberComponentFactory: ComponentFactory<NumberControlComponent>;
   yesnoComponentFactory: ComponentFactory<YesNoControlComponent>;
-  constructor(private cdr: ComponentFactoryResolver) { }
+  constructor(private cdr: ComponentFactoryResolver, private formGenerator: FormDataStorageService) {
+    this.config = formGenerator.loadFormJson();
+  }
 
   ngOnInit() {
     this.myForm = new FormGroup({});
@@ -79,14 +51,14 @@ export class FormContainerComponent implements OnInit {
     this.loadFormConfig(this.config);
   }
 
-  private loadFormConfig(config: any[]) {
+  private loadFormConfig(config: FormConfig) {
 
     this.viewContainer.clear();
 
     config.forEach(control => this.generateControl(control));
   }
 
-  private generateControl(control: any, parentControlName?: string) {
+  private generateControl(control: ControlObject, parentControlName?: string) {
     let ctrl;
     if (control.type === 'text') {
       ctrl = this.viewContainer.createComponent(this.textComponentFactory);
@@ -105,8 +77,8 @@ export class FormContainerComponent implements OnInit {
     ctrl.instance.controlConditionType = control.conditionType;
     ctrl.instance.controlConditionValue = control.conditionValue;
     this.myForm.addControl('control' + this.controlsIndex, new FormControl());
-    if (control.controls && control.controls.length) {
-      control.controls.forEach(innerControl => this.generateControl(innerControl, ctrl.instance.controlName ));
+    if (control.dynamicControls && control.dynamicControls.length) {
+      control.dynamicControls.forEach(innerControl => this.generateControl(innerControl, ctrl.instance.controlName ));
     }
   }
 
